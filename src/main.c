@@ -2,21 +2,22 @@
 #include <SDL2/SDL.h>
 #include "constants.h"
 
-const int map[MAP_NUM_ROWS][MAP_NUM_COLS] =
-	{
-		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-		{1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1},
-		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1},
-		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1},
-		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1},
-		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1},
-		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}};
+const int map[MAP_NUM_ROWS][MAP_NUM_COLS] = 
+{
+	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+	{1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1},
+	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1},
+	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1},
+	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1},
+	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1},
+	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+};
 
 struct Player
 {
@@ -26,15 +27,13 @@ struct Player
 	float height;
 	int turnDirection; // -1 left, +1 right
 	int walkDirection; // -1 backwards, +1 foward
-	int rotationAngle;
+	float rotationAngle;
 	float walkSpeed;
 	float turnSpeed;
 } player;
 
 SDL_Window *window = NULL;
 SDL_Renderer *renderer = NULL;
-
-// Global variables
 int isGameRunning = FALSE;
 int ticksLastFrame;
 
@@ -54,14 +53,13 @@ int initializeWindow()
 		SDL_WINDOW_BORDERLESS);
 	if (!window)
 	{
-		fprintf(stderr, "Error creating SDL window \n");
+		fprintf(stderr, "Error creating SDL window.\n");
 		return FALSE;
 	}
-
 	renderer = SDL_CreateRenderer(window, -1, 0);
 	if (!renderer)
 	{
-		fprintf(stderr, "Error creating SDL renderer \n");
+		fprintf(stderr, "Error creating SDL renderer.\n");
 		return FALSE;
 	}
 	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
@@ -74,6 +72,49 @@ void destroyWindow()
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 	SDL_Quit();
+}
+
+void setup()
+{
+	player.x = WINDOW_WIDTH / 2;
+	player.y = WINDOW_HEIGHT / 2;
+	player.width = 1;
+	player.height = 1;
+	player.turnDirection = 0;
+	player.walkDirection = 0;
+	player.rotationAngle = PI / 2;
+	player.walkSpeed = 100;
+	player.turnSpeed = 45 * (PI / 180);
+}
+
+void movePlayer(float deltaTime)
+{
+	player.rotationAngle += player.turnDirection * player.turnSpeed * deltaTime;
+	float moveStep = player.walkDirection * player.walkSpeed * deltaTime;
+
+	float newPlayerX = player.x + cos(player.rotationAngle) * moveStep;
+	float newPlayerY = player.y + sin(player.rotationAngle) * moveStep;
+
+	player.x = newPlayerX;
+	player.y = newPlayerY;
+}
+
+void renderPlayer()
+{
+	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+	SDL_Rect playerRect = {
+		player.x * MINIMAP_SCALE_FACTOR,
+		player.y * MINIMAP_SCALE_FACTOR,
+		player.width * MINIMAP_SCALE_FACTOR,
+		player.height * MINIMAP_SCALE_FACTOR};
+	SDL_RenderFillRect(renderer, &playerRect);
+
+	SDL_RenderDrawLine(
+		renderer,
+		MINIMAP_SCALE_FACTOR * player.x,
+		MINIMAP_SCALE_FACTOR * player.y,
+		MINIMAP_SCALE_FACTOR * player.x + cos(player.rotationAngle) * 40,
+		MINIMAP_SCALE_FACTOR * player.y + sin(player.rotationAngle) * 40);
 }
 
 void renderMap()
@@ -96,6 +137,7 @@ void renderMap()
 		}
 	}
 }
+
 void processInput()
 {
 	SDL_Event event;
@@ -111,39 +153,43 @@ void processInput()
 	{
 		if (event.key.keysym.sym == SDLK_ESCAPE)
 			isGameRunning = FALSE;
+		if (event.key.keysym.sym == SDLK_UP)
+			player.walkDirection = +1;
+		if (event.key.keysym.sym == SDLK_DOWN)
+			player.walkDirection = -1;
+		if (event.key.keysym.sym == SDLK_RIGHT)
+			player.turnDirection = +1;
+		if (event.key.keysym.sym == SDLK_LEFT)
+			player.turnDirection = -1;
+		break;
+	}
+	case SDL_KEYUP:
+	{
+		if (event.key.keysym.sym == SDLK_UP)
+			player.walkDirection = 0;
+		if (event.key.keysym.sym == SDLK_DOWN)
+			player.walkDirection = 0;
+		if (event.key.keysym.sym == SDLK_RIGHT)
+			player.turnDirection = 0;
+		if (event.key.keysym.sym == SDLK_LEFT)
+			player.turnDirection = 0;
 		break;
 	}
 	}
 }
 
-void setup()
-{
-	player.x = WINDOW_WIDTH / 2;
-	player.y = WINDOW_HEIGHT / 2;
-	player.width = 5;
-	player.height = 5;
-	player.turnDirection = 0;
-	player.walkDirection = 0;
-	player.rotationAngle = PI / 2;
-	player.walkSpeed = 100;
-	player.turnSpeed = 45 * (PI / 180);
-}
-
 void update()
 {
 	// how long until we reach the target frame time in milliseconds
-	int timeToWait = FRAME_TIME_LENGTH - (SDL_GetTicks() - ticksLastFrame);
+	while (!SDL_TICKS_PASSED(SDL_GetTicks(), ticksLastFrame + FRAME_TIME_LENGTH));
 
 	// delays execution when needed
-	if (timeToWait > 0 && timeToWait <= FRAME_TIME_LENGTH)
-	{
-		SDL_Delay(timeToWait);
-	}
-
 	float deltaTime = (SDL_GetTicks() - ticksLastFrame) / 1000.0f;
 
 	// stores the milliseconds of the current frame to be used in the future
 	ticksLastFrame = SDL_GetTicks();
+
+	movePlayer(deltaTime);
 }
 
 void render()
@@ -153,18 +199,17 @@ void render()
 
 	renderMap();
 	//renderRays();
-	//renderPlayer();
+	renderPlayer();
 
 	SDL_RenderPresent(renderer);
 }
+
 int main()
 {
-
 	isGameRunning = initializeWindow();
 
 	setup();
-	// right now the framerate is dependant on the cpu speed
-	// TODO: fix game loop with delta time
+
 	while (isGameRunning)
 	{
 		processInput();
