@@ -75,17 +75,22 @@ void setup()
 	 playerY = 0;
 }
 
-void update() 
-{
-	// wait until we reach the target frame limit
-	while(!SDL_TICKS_PASSED( SDL_GetTicks(), ticksLastFrame + FRAME_TIME_LENGHT ));
-		
-	float deltaTime = (SDL_GetTicks() - ticksLastFrame) / 1000.0f;
+void update() {
+    // how long until we reach the target frame time in milliseconds
+    int timeToWait = FRAME_TIME_LENGTH - (SDL_GetTicks() - ticksLastFrame);
 
-	ticksLastFrame = SDL_GetTicks();
+    // delays execution when needed
+    if (timeToWait > 0 && timeToWait <= FRAME_TIME_LENGTH) {
+        SDL_Delay(timeToWait);
+    }
 
-	playerX += 50 * deltaTime;
-	playerY += 50 * deltaTime;
+    float deltaTime = (SDL_GetTicks() - ticksLastFrame) / 1000.0f;
+
+    // stores the milliseconds of the current frame to be used in the future
+    ticksLastFrame = SDL_GetTicks();
+
+    playerX += 50 * deltaTime;
+    playerY += 50 * deltaTime;
 }
 
 void render()

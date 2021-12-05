@@ -5,4 +5,4 @@
 #define WINDOW_HEIGHT 600
 
 #define FPS 30
-#define FRAME_TIME_LENGHT (1000 / FPS)
+#define FRAME_TIME_LENGTH (1000 / FPS)
