@@ -4,9 +4,12 @@
 
 SDL_Window *window = NULL;
 SDL_Renderer *renderer = NULL;
-int isGameRunning = FALSE;
 
+// Global variables
+int isGameRunning = FALSE;
 int playerX, playerY;
+int ticksLastFrame = 0; 
+
 
 int initializeWindow()
 {
@@ -74,8 +77,15 @@ void setup()
 
 void update() 
 {
-	playerX += 1;
-	playerY += 1;
+	// wait until we reach the target frame limit
+	while(!SDL_TICKS_PASSED( SDL_GetTicks(), ticksLastFrame + FRAME_TIME_LENGHT ));
+		
+	float deltaTime = (SDL_GetTicks() - ticksLastFrame) / 1000.0f;
+
+	ticksLastFrame = SDL_GetTicks();
+
+	playerX += 50 * deltaTime;
+	playerY += 50 * deltaTime;
 }
 
 void render()
