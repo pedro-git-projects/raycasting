@@ -50,9 +50,9 @@ SDL_Renderer *renderer = NULL;
 int isGameRunning = FALSE;
 int ticksLastFrame;
 
-Uint32* colorBuffer = NULL;
+Uint32 *colorBuffer = NULL;
 
-SDL_Texture* colorBufferTexture;
+SDL_Texture *colorBufferTexture;
 
 int initializeWindow()
 {
@@ -86,6 +86,8 @@ int initializeWindow()
 
 void destroyWindow()
 {
+	free(colorBuffer);
+	SDL_DestroyTexture(colorBufferTexture);
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
 	SDL_Quit();
@@ -104,16 +106,15 @@ void setup()
 	player.turnSpeed = 45 * (PI / 180);
 
 	// allocate the total memory to buffer
-	colorBuffer = (Uint32*)malloc( sizeof(Uint32) *  (Uint32)WINDOW_WIDTH * (Uint32)WINDOW_HEIGHT);
+	colorBuffer = (Uint32 *)malloc(sizeof(Uint32) * (Uint32)WINDOW_WIDTH * (Uint32)WINDOW_HEIGHT);
 
 	// create an SDL_Texture to display the colorbuffer
 	colorBufferTexture = SDL_CreateTexture(
-			renderer,
-			SDL_PIXELFORMAT_ARGB8888,
-			SDL_TEXTUREACCESS_STREAMING,
-			WINDOW_WIDTH,
-			WINDOW_HEIGHT
-			);
+		renderer,
+		SDL_PIXELFORMAT_ARGB8888,
+		SDL_TEXTUREACCESS_STREAMING,
+		WINDOW_WIDTH,
+		WINDOW_HEIGHT);
 }
 
 int mapHasWallAt(float x, float y)
@@ -160,16 +161,19 @@ void renderPlayer()
 		MINIMAP_SCALE_FACTOR * player.y + sin(player.rotationAngle) * 40);
 }
 
-float normalizeAngle(float angle) {
-    angle = remainder(angle, TWO_PI);
-    if (angle < 0) {
-        angle = TWO_PI + angle;
-    }
-    return angle;
+float normalizeAngle(float angle)
+{
+	angle = remainder(angle, TWO_PI);
+	if (angle < 0)
+	{
+		angle = TWO_PI + angle;
+	}
+	return angle;
 }
 
-float distanceBetweenPoints(float x1, float y1, float x2, float y2) {
-    return sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+float distanceBetweenPoints(float x1, float y1, float x2, float y2)
+{
+	return sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
 }
 
 void castRay(float rayAngle, int stripId)
@@ -283,11 +287,11 @@ void castRay(float rayAngle, int stripId)
 
 	// Calculate both horizontal and vertical hit distances and choose the smallest one
 	float horzHitDistance = foundHorzWallHit
-								? distanceBetweenPoints(player.x, player.y, horzWallHitX, horzWallHitY)
-								: FLT_MAX;
+		? distanceBetweenPoints(player.x, player.y, horzWallHitX, horzWallHitY)
+		: FLT_MAX;
 	float vertHitDistance = foundVertWallHit
-								? distanceBetweenPoints(player.x, player.y, vertWallHitX, vertWallHitY)
-								: FLT_MAX;
+		? distanceBetweenPoints(player.x, player.y, vertWallHitX, vertWallHitY)
+		: FLT_MAX;
 
 	if (vertHitDistance < horzHitDistance)
 	{
@@ -418,19 +422,21 @@ void update()
 void renderColorBuffer()
 {
 	SDL_UpdateTexture(
-			colorBufferTexture, 
-			NULL, 
-			colorBuffer, 
-			(int)(Uint32)WINDOW_WIDTH * sizeof(Uint32));
+		colorBufferTexture,
+		NULL,
+		colorBuffer,
+		(int)(Uint32)WINDOW_WIDTH * sizeof(Uint32));
 	SDL_RenderCopy(renderer, colorBufferTexture, NULL, NULL);
 }
 
 void clearColorBuffer(Uint32 color)
 {
-	for (int x = 0; x < WINDOW_WIDTH; x++) {
-		for (int y = 0; y < WINDOW_HEIGHT; y++) {
+	for (int x = 0; x < WINDOW_WIDTH; x++)
+	{
+		for (int y = 0; y < WINDOW_HEIGHT; y++)
+		{
 			if (x == y)
-				colorBuffer[(WINDOW_WIDTH * y) + x ] = color;
+				colorBuffer[(WINDOW_WIDTH * y) + x] = color;
 			else
 				colorBuffer[(WINDOW_WIDTH * y) + x] = 0xFFFF0000;
 		}
@@ -445,7 +451,7 @@ void render()
 	renderColorBuffer();
 
 	clearColorBuffer(0xFF00EE30);
-	
+
 	// display minimap
 	renderMap();
 	renderRays();
