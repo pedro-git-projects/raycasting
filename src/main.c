@@ -287,11 +287,11 @@ void castRay(float rayAngle, int stripId)
 
 	// Calculate both horizontal and vertical hit distances and choose the smallest one
 	float horzHitDistance = foundHorzWallHit
-		? distanceBetweenPoints(player.x, player.y, horzWallHitX, horzWallHitY)
-		: FLT_MAX;
+								? distanceBetweenPoints(player.x, player.y, horzWallHitX, horzWallHitY)
+								: FLT_MAX;
 	float vertHitDistance = foundVertWallHit
-		? distanceBetweenPoints(player.x, player.y, vertWallHitX, vertWallHitY)
-		: FLT_MAX;
+								? distanceBetweenPoints(player.x, player.y, vertWallHitX, vertWallHitY)
+								: FLT_MAX;
 
 	if (vertHitDistance < horzHitDistance)
 	{
@@ -429,18 +429,37 @@ void renderColorBuffer()
 	SDL_RenderCopy(renderer, colorBufferTexture, NULL, NULL);
 }
 
+void generate3DProjection()
+{
+	for (int i = 0; i < NUM_RAYS; i++)
+	{
+		// fixes perpendicular distance
+		float perpDistance = rays[i].distance * cos(rays[i].rayAngle - player.rotationAngle);
+
+		float distanceProjPlane = (WINDOW_WIDTH / 2) / tan(FOV_ANGLE / 2);
+		float projectedWallHeight = (TILE_SIZE / perpDistance) * distanceProjPlane;
+
+		int wallStripHeight = projectedWallHeight;
+
+		int wallTopPixel = (WINDOW_HEIGHT / 2) - (wallStripHeight / 2);
+		wallTopPixel = wallTopPixel < 0 ? 0 : wallTopPixel;
+
+		int wallBottomPixel = (WINDOW_HEIGHT / 2) + (wallStripHeight / 2);
+		wallBottomPixel = wallBottomPixel > WINDOW_HEIGHT ? WINDOW_HEIGHT : wallBottomPixel;
+
+		// render wall from wallTopPixel to wallBottomPixel
+		for (int y = wallTopPixel; y < wallBottomPixel; y++)
+		{
+			colorBuffer[(WINDOW_WIDTH * y) + i] = rays[i].wasHitVertical ? 0xFFFFFFFF : 0xFFCCCCCC;
+		}
+	}
+}
+
 void clearColorBuffer(Uint32 color)
 {
 	for (int x = 0; x < WINDOW_WIDTH; x++)
-	{
 		for (int y = 0; y < WINDOW_HEIGHT; y++)
-		{
-			if (x == y)
-				colorBuffer[(WINDOW_WIDTH * y) + x] = color;
-			else
-				colorBuffer[(WINDOW_WIDTH * y) + x] = 0xFFFF0000;
-		}
-	}
+			colorBuffer[(WINDOW_WIDTH * y) + x] = color;
 }
 
 void render()
@@ -448,9 +467,10 @@ void render()
 	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 	SDL_RenderClear(renderer);
 
-	renderColorBuffer();
+	generate3DProjection();
 
-	clearColorBuffer(0xFF00EE30);
+	renderColorBuffer();
+	clearColorBuffer(0xFF000000);
 
 	// display minimap
 	renderMap();
