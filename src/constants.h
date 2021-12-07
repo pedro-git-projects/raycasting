@@ -17,5 +17,5 @@
 
 #define NUM_RAYS WINDOW_WIDTH 
 
-#define FPS 60
+#define FPS 30
 #define FRAME_TIME_LENGTH (1000 / FPS)
