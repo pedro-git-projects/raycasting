@@ -1,22 +1,22 @@
 #include <stdio.h>
 #include <SDL2/SDL.h>
 #include "constants.h"
+#include "textures.h"
 
-const int map[MAP_NUM_ROWS][MAP_NUM_COLS] =
-	{
-		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
-		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-		{1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1},
-		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1},
-		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1},
-		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1},
-		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1},
-		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-		{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-		{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}};
+const int map[MAP_NUM_ROWS][MAP_NUM_COLS] = {
+	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1},
+	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1},
+	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0, 1},
+	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+	{1, 0, 0, 0, 2, 2, 0, 3, 0, 4, 0, 5, 0, 6, 0, 0, 0, 0, 0, 1},
+	{1, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+	{1, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 1},
+	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5},
+	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 5},
+	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 5},
+	{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 5},
+	{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 5, 5, 5, 5, 5, 5}};
 
 struct Player
 {
@@ -51,10 +51,8 @@ int isGameRunning = FALSE;
 int ticksLastFrame;
 
 Uint32 *colorBuffer = NULL;
-
 SDL_Texture *colorBufferTexture;
-
-Uint32* wallTexture = NULL;
+Uint32 *textures[NUM_TEXTURES];
 
 int initializeWindow()
 {
@@ -116,20 +114,17 @@ void setup()
 		SDL_PIXELFORMAT_ARGB8888,
 		SDL_TEXTUREACCESS_STREAMING,
 		WINDOW_WIDTH,
-		WINDOW_HEIGHT
-		);
+		WINDOW_HEIGHT);
 
-	// create a texture with blue and black line patterns
-	wallTexture = (Uint32*) malloc(sizeof(Uint32) * (Uint32)TEXTURE_WIDTH * (Uint32)TEXTURE_HEIGHT);
-	for (int x = 0; x < TEXTURE_WIDTH; x++) 
-	{
-		for (int y = 0; y < TEXTURE_HEIGHT; y++) 
-		{
-			wallTexture[(TEXTURE_WIDTH * y) + x] = (x % 8 && y % 8) ? 0xFF0000FF : 0xFF000000;
-
-		} 
-		
-	} 
+	// load textures from textures .h
+	textures[0] = (Uint32 *)REDBRICK_TEXTURE;
+	textures[1] = (Uint32 *)PURPLESTONE_TEXTURE;
+	textures[2] = (Uint32 *)MOSSYSTONE_TEXTURE;
+	textures[3] = (Uint32 *)GRAYSTONE_TEXTURE;
+	textures[4] = (Uint32 *)COLORSTONE_TEXTURE;
+	textures[5] = (Uint32 *)BLUESTONE_TEXTURE;
+	textures[6] = (Uint32 *)WOOD_TEXTURE;
+	textures[7] = (Uint32 *)EAGLE_TEXTURE;
 }
 
 int mapHasWallAt(float x, float y)
@@ -448,13 +443,11 @@ void generate3DProjection()
 {
 	for (int i = 0; i < NUM_RAYS; i++)
 	{
-		// fixes perpendicular distance
 		float perpDistance = rays[i].distance * cos(rays[i].rayAngle - player.rotationAngle);
-
 		float distanceProjPlane = (WINDOW_WIDTH / 2) / tan(FOV_ANGLE / 2);
 		float projectedWallHeight = (TILE_SIZE / perpDistance) * distanceProjPlane;
 
-		int wallStripHeight = projectedWallHeight;
+		int wallStripHeight = (int)projectedWallHeight;
 
 		int wallTopPixel = (WINDOW_HEIGHT / 2) - (wallStripHeight / 2);
 		wallTopPixel = wallTopPixel < 0 ? 0 : wallTopPixel;
@@ -464,33 +457,31 @@ void generate3DProjection()
 
 		// set the color of the ceiling
 		for (int y = 0; y < wallTopPixel; y++)
-			colorBuffer[(WINDOW_WIDTH * y) + i] = 0xFF333333;
+			colorBuffer[(WINDOW_WIDTH * y) + i] = 0xFF444444;
 
-		int textureOffsetX; 		
-		if(rays[i].wasHitVertical) 
-		{ 
-			// perform offset for vertical hit
+		int textureOffsetX;
+		if (rays[i].wasHitVertical)
 			textureOffsetX = (int)rays[i].wallHitY % TILE_SIZE;
-		} else 
-		{
-			// perform offset for horizontal hit
+		else
 			textureOffsetX = (int)rays[i].wallHitX % TILE_SIZE;
 
-		}
+		// get the correct texture id number from the map
+		int texNum = rays[i].wallHitContent - 1;
 
-		// render wall from wallTopPixel to wallBottomPixel
+		// render the wall from wallTopPixel to wallBottomPixel
 		for (int y = wallTopPixel; y < wallBottomPixel; y++)
 		{
-			int distanceFromTop = (y + (wallStripHeight / 2)  - (WINDOW_HEIGHT / 2));
+			int distanceFromTop = y + (wallStripHeight / 2) - (WINDOW_HEIGHT / 2);
 			int textureOffsetY = distanceFromTop * ((float)TEXTURE_HEIGHT / wallStripHeight);
 
-			Uint32 texelColor = wallTexture[(TEXTURE_WIDTH * textureOffsetY) + textureOffsetX];
+			// set the color of the wall based on the color from the texture
+			Uint32 texelColor = textures[texNum][(TEXTURE_WIDTH * textureOffsetY) + textureOffsetX];
 			colorBuffer[(WINDOW_WIDTH * y) + i] = texelColor;
 		}
 
 		// set the color of the floor
-		for (int y = wallBottomPixel; y < WINDOW_WIDTH; y++)
-			colorBuffer[(WINDOW_WIDTH * y ) + i] = 0xFF777777;
+		for (int y = wallBottomPixel; y < WINDOW_HEIGHT; y++)
+			colorBuffer[(WINDOW_WIDTH * y) + i] = 0xFF888888;
 	}
 }
 
