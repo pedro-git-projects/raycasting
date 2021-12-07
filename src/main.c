@@ -54,6 +54,8 @@ Uint32 *colorBuffer = NULL;
 
 SDL_Texture *colorBufferTexture;
 
+Uint32* wallTexture = NULL;
+
 int initializeWindow()
 {
 	if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
@@ -73,7 +75,7 @@ int initializeWindow()
 		fprintf(stderr, "Error creating SDL window.\n");
 		return FALSE;
 	}
-	renderer = SDL_CreateRenderer(window, -1, 0);
+	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC);
 	if (!renderer)
 	{
 		fprintf(stderr, "Error creating SDL renderer.\n");
@@ -114,7 +116,20 @@ void setup()
 		SDL_PIXELFORMAT_ARGB8888,
 		SDL_TEXTUREACCESS_STREAMING,
 		WINDOW_WIDTH,
-		WINDOW_HEIGHT);
+		WINDOW_HEIGHT
+		);
+
+	// create a texture with blue and black line patterns
+	wallTexture = (Uint32*) malloc(sizeof(Uint32) * (Uint32)TEXTURE_WIDTH * (Uint32)TEXTURE_HEIGHT);
+	for (int x = 0; x < TEXTURE_WIDTH; x++) 
+	{
+		for (int y = 0; y < TEXTURE_HEIGHT; y++) 
+		{
+			wallTexture[(TEXTURE_WIDTH * y) + x] = (x % 8 && y % 8) ? 0xFF0000FF : 0xFF000000;
+
+		} 
+		
+	} 
 }
 
 int mapHasWallAt(float x, float y)
@@ -451,10 +466,26 @@ void generate3DProjection()
 		for (int y = 0; y < wallTopPixel; y++)
 			colorBuffer[(WINDOW_WIDTH * y) + i] = 0xFF333333;
 
+		int textureOffsetX; 		
+		if(rays[i].wasHitVertical) 
+		{ 
+			// perform offset for vertical hit
+			textureOffsetX = (int)rays[i].wallHitY % TILE_SIZE;
+		} else 
+		{
+			// perform offset for horizontal hit
+			textureOffsetX = (int)rays[i].wallHitX % TILE_SIZE;
+
+		}
+
 		// render wall from wallTopPixel to wallBottomPixel
 		for (int y = wallTopPixel; y < wallBottomPixel; y++)
 		{
-			colorBuffer[(WINDOW_WIDTH * y) + i] = rays[i].wasHitVertical ? 0xFFFFFFFF : 0xFFCCCCCC;
+			int distanceFromTop = (y + (wallStripHeight / 2)  - (WINDOW_HEIGHT / 2));
+			int textureOffsetY = distanceFromTop * ((float)TEXTURE_HEIGHT / wallStripHeight);
+
+			Uint32 texelColor = wallTexture[(TEXTURE_WIDTH * textureOffsetY) + textureOffsetX];
+			colorBuffer[(WINDOW_WIDTH * y) + i] = texelColor;
 		}
 
 		// set the color of the floor
