@@ -7,7 +7,7 @@ Ray casting is a rendering technique that is capable of creating a three-dimensi
 ## Technology 
 
 The main pieces of tech used in this project were: the c programming language. And the SDL library, which can be found here: https://www.libsdl.org/
-In the near future png decoding libraries are also intended to be incorporated.
+A minimalistic fork from LodePNG called upng was also used for image decoding.
 
 ## Running the application
 
