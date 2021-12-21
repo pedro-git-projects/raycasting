@@ -452,7 +452,7 @@ void generate3DProjection()
 
 		// set the color of the ceiling
 		for (int y = 0; y < wallTopPixel; y++)
-			colorBuffer[(WINDOW_WIDTH * y) + i] = 0xFF444444;
+			colorBuffer[(WINDOW_WIDTH * y) + i] = 0xFFCC241D;
 
 		int textureOffsetX;
 		if (rays[i].wasHitVertical)
@@ -479,7 +479,7 @@ void generate3DProjection()
 
 		// set the color of the floor
 		for (int y = wallBottomPixel; y < WINDOW_HEIGHT; y++)
-			colorBuffer[(WINDOW_WIDTH * y) + i] = 0xFF888888;
+			colorBuffer[(WINDOW_WIDTH * y) + i] = 0xFF282828;
 	}
 }
 
