@@ -19,4 +19,4 @@ When cloning the repo, you will have access to a MAKEFILE. Make sure you have GC
 
 ## Screenshot
 
-  ![Code in action](/readme/raycasting_c.png)
+  ![Code in action](/readme/raycasting_doom.png)
