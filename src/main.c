@@ -118,11 +118,10 @@ void setup()
 		SDL_TEXTUREACCESS_STREAMING,
 		WINDOW_WIDTH,
 		WINDOW_HEIGHT);
-	
+
 	// Calls upng in order to decode pngs and load wallTextures array
 	loadWallTextures();
-
-	}
+}
 
 int mapHasWallAt(float x, float y)
 {
@@ -325,12 +324,11 @@ void castRay(float rayAngle, int stripId)
 
 void castAllRays()
 {
-	float rayAngle = player.rotationAngle - (FOV_ANGLE / 2);
 
-	for (int stripId = 0; stripId < NUM_RAYS; stripId++)
+	for (int col = 0; col < NUM_RAYS; col++)
 	{
-		castRay(rayAngle, stripId);
-		rayAngle += FOV_ANGLE / NUM_RAYS;
+		float rayAngle = player.rotationAngle + atan((col - NUM_RAYS / 2) / DIST_PROJ_PLANE);
+		castRay(rayAngle, col);
 	}
 }
 
@@ -441,8 +439,8 @@ void generate3DProjection()
 	for (int i = 0; i < NUM_RAYS; i++)
 	{
 		float perpDistance = rays[i].distance * cos(rays[i].rayAngle - player.rotationAngle);
-		float distanceProjPlane = (WINDOW_WIDTH / 2) / tan(FOV_ANGLE / 2);
-		float projectedWallHeight = (TILE_SIZE / perpDistance) * distanceProjPlane;
+
+		float projectedWallHeight = (TILE_SIZE / perpDistance) * DIST_PROJ_PLANE;
 
 		int wallStripHeight = (int)projectedWallHeight;
 
@@ -465,14 +463,17 @@ void generate3DProjection()
 		// get the correct texture id number from the map
 		int texNum = rays[i].wallHitContent - 1;
 
+		int texture_width = wallTextures[texNum].width;
+		int texture_height = wallTextures[texNum].height;
+
 		// render the wall from wallTopPixel to wallBottomPixel
 		for (int y = wallTopPixel; y < wallBottomPixel; y++)
 		{
 			int distanceFromTop = y + (wallStripHeight / 2) - (WINDOW_HEIGHT / 2);
-			int textureOffsetY = distanceFromTop * ((float)TEXTURE_HEIGHT / wallStripHeight);
+			int textureOffsetY = distanceFromTop * ((float)texture_height / wallStripHeight);
 
 			// set the color of the wall based on the color from the texture
-			uint32_t texelColor = wallTextures[texNum].texture_buffer[(TEXTURE_WIDTH * textureOffsetY) + textureOffsetX];
+			uint32_t texelColor = wallTextures[texNum].texture_buffer[(texture_width * textureOffsetY) + textureOffsetX];
 			colorBuffer[(WINDOW_WIDTH * y) + i] = texelColor;
 		}
 
