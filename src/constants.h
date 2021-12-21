@@ -13,8 +13,10 @@
 
 #define MINIMAP_SCALE_FACTOR 0.2
 
-#define WINDOW_WIDTH 768
-#define WINDOW_HEIGHT 432
+// 768x432 for low res feel
+
+#define WINDOW_WIDTH 1920
+#define WINDOW_HEIGHT 1080
 
 #define FOV_ANGLE (60 * (PI / 180))
 
