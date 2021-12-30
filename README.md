@@ -2,7 +2,7 @@
 
 ## Objective
 
-Ray casting is a rendering technique that is capable of creating a three-dimensional perspective in a two-dimensional map. In this project the aim was to create a raycasting engine for rendering pseudo 3D graphics using trigonometric functions (another common techinque is the use of vectors) so as to deepen my understanding of computer graphics, mathematics and JavaScript. 
+Ray casting is a rendering technique that is capable of creating a three-dimensional perspective in a two-dimensional map. In this project the aim was to create a raycasting engine for rendering pseudo 3D graphics using trigonometric functions (another common techinque is the use of vectors) so as to deepen my understanding of computer graphics, mathematics and C. 
 
 ## Technology 
 
